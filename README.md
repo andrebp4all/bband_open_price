@@ -14,3 +14,9 @@ This project calculates Bollinger Bands for S&P500 data and filters the results 
 
 1. Run `0_prepare_and_bb.py` to prepare the data and calculate Bollinger Bands.
 2. Run `1_merge_and_filter.py` to merge and filter the data and save the results.
+
+## Updates
+- Removed 'open' column from CSV outputs in result files.
+- Changed output format to CSV for compatibility with further data processing.
+
+

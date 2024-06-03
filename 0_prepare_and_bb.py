@@ -1,5 +1,4 @@
 import pandas as pd
-from ta.volatility import BollingerBands
 
 # Load the daily open price CSV file
 df_daily = pd.read_csv('sourcedata/spx-1d.csv', sep=';', header=None, names=['date', 'time', 'open', 'high', 'low', 'close', 'volume'])
@@ -27,11 +26,14 @@ df_spx['formatted_date'] = df_spx.index.strftime('%m/%d/%Y')
 df_spx.to_csv('data/spx-5m-with-day-month-year.csv', index=False, columns=['formatted_date', 'time', 'open', 'high', 'low', 'close', 'volume', 'day', 'month', 'year'])
 print("Data saved to spx-5m-with-day-month-year.csv")
 
-# Calculate Bollinger Bands
+# Calculate Bollinger Bands manually
+window = 20
 df_spx['close'] = pd.to_numeric(df_spx['close'], errors='coerce')
-bb_indicator = BollingerBands(close=df_spx['close'], window=20, window_dev=2)
-df_spx['bollinger_band_upper'] = bb_indicator.bollinger_hband()
+df_spx['SMA'] = df_spx['close'].rolling(window=window).mean()
+df_spx['SD'] = df_spx['close'].rolling(window=window).std()
+df_spx['bollinger_band_upper'] = df_spx['SMA'] + (2 * df_spx['SD'])
+df_spx['bollinger_band_lower'] = df_spx['SMA'] - (2 * df_spx['SD'])
 
 # Save the Bollinger Bands data
-df_spx[['formatted_date', 'time', 'close', 'bollinger_band_upper']].to_csv('data/bb5m.csv', index=False)
-print("Bollinger Bands calculated and data saved to bb5m.csv")
+df_spx[['formatted_date', 'time', 'close', 'bollinger_band_upper', 'bollinger_band_lower']].to_csv('data/bb5m.csv', index=False)
+print("Bollinger Bands calculated manually and data saved to bb5m.csv")
